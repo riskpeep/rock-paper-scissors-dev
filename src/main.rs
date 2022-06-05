@@ -109,31 +109,41 @@ fn main() {
 
     println!("My move is {}", comp_move);
 
-    println!("Please input your move.");
+    loop {
 
-    let mut player_move = String::new();
+        let mut player_move = String::new();
 
-    io::stdin()
-        .read_line(&mut player_move)
-        .expect("Failed to read move");
+        println!("Please input your move.");
 
-    let player_move: Result<RockPaperSissorsGuess, RockPaperSissorsParseError>
-        = player_move.trim().parse();
+        io::stdin()
+            .read_line(&mut player_move)
+            .expect("Failed to read move");
 
-    // TODO can we clean up the *.unwrap()'s all over the place?  We DO want the
-    // Result so we can catch the error, but once we know it isn't an error, we
-    // want to ditch the unwrap and get back to the result.  Seems like there is
-    // a better way.
-    match player_move {
-        Ok(_) => println!("You chose: {}", &(player_move.as_ref().unwrap())), // TODO figure out why this needs as_ref
-        Err(_) => println!("That is not a valid guess, try again."), // TODO Figure out how to name the character here.
-    }
+        let player_move: Result<RockPaperSissorsGuess, RockPaperSissorsParseError>
+            = player_move.trim().parse();
 
-    let result = compare(&(player_move.as_ref().unwrap()), &comp_move); // TODO figure out why this needs as_ref
+        // TODO can we clean up the *.unwrap()'s all over the place?  We DO want the
+        // Result so we can catch the error, but once we know it isn't an error, we
+        // want to ditch the unwrap and get back to the result.  Seems like there is
+        // a better way.
+        match player_move {
+            Ok(_) => {
+                println!("You chose: {}", &(player_move.as_ref().unwrap())); // TODO figure out why this needs as_ref
+            }
+            Err(_) => {
+                println!("That is not a valid guess, try again."); // TODO Figure out how to name the character here.
+                continue
+            },
+        }
 
-    match result {
-        RockPaperSissorsResult::Win(_) => println!("You Win!"),
-        RockPaperSissorsResult::Tie => println!("Tie..."),
-        RockPaperSissorsResult::Loss(_) => println!("You Lose!"),
+        let result: RockPaperSissorsResult = compare(&(player_move.as_ref().unwrap()), &comp_move); // TODO figure out why this needs as_ref
+
+        match result {
+            RockPaperSissorsResult::Win(_) => println!("You Win!"),
+            RockPaperSissorsResult::Tie => println!("Tie..."),
+            RockPaperSissorsResult::Loss(_) => println!("You Lose!"),
+        }
+
+        break;
     }
 }
