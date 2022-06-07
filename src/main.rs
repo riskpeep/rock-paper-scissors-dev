@@ -15,6 +15,10 @@ enum RockPaperSissorsGuess {
     Sissors,
 }
 
+pub trait Compare<T, U> {
+    fn compare(&self, b: &T) -> U;
+}
+
 enum RockPaperSissorsCompare {
     RockCrushesSissors,
     PaperCoversRock,
@@ -27,37 +31,38 @@ enum RockPaperSissorsResult {
     Tie,
 }
 
-// TODO Tie this back to an enum somehow
-fn compare(a: &RockPaperSissorsGuess, b: &RockPaperSissorsGuess) -> RockPaperSissorsResult {
-    match a {
-        RockPaperSissorsGuess::Rock => {
-            match b {
-                RockPaperSissorsGuess::Rock    =>
-                    RockPaperSissorsResult::Tie,
-                RockPaperSissorsGuess::Paper   =>
-                    RockPaperSissorsResult::Loss(RockPaperSissorsCompare::PaperCoversRock),
-                RockPaperSissorsGuess::Sissors =>
-                    RockPaperSissorsResult::Win(RockPaperSissorsCompare::RockCrushesSissors),
+impl Compare<RockPaperSissorsGuess, RockPaperSissorsResult> for RockPaperSissorsGuess{
+    fn compare(&self, b: &RockPaperSissorsGuess) -> RockPaperSissorsResult {
+        match self {
+            RockPaperSissorsGuess::Rock => {
+                match b {
+                    RockPaperSissorsGuess::Rock    =>
+                        RockPaperSissorsResult::Tie,
+                    RockPaperSissorsGuess::Paper   =>
+                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::PaperCoversRock),
+                    RockPaperSissorsGuess::Sissors =>
+                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::RockCrushesSissors),
+                }
             }
-        }
-        RockPaperSissorsGuess::Paper => {
-            match b {
-                RockPaperSissorsGuess::Rock    =>
-                    RockPaperSissorsResult::Win(RockPaperSissorsCompare::PaperCoversRock),
-                RockPaperSissorsGuess::Paper   =>
-                    RockPaperSissorsResult::Tie,
-                RockPaperSissorsGuess::Sissors =>
-                    RockPaperSissorsResult::Loss(RockPaperSissorsCompare::SissorsCutPaper),
+            RockPaperSissorsGuess::Paper => {
+                match b {
+                    RockPaperSissorsGuess::Rock    =>
+                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::PaperCoversRock),
+                    RockPaperSissorsGuess::Paper   =>
+                        RockPaperSissorsResult::Tie,
+                    RockPaperSissorsGuess::Sissors =>
+                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::SissorsCutPaper),
+                }
             }
-        }
-        RockPaperSissorsGuess::Sissors => {
-            match b {
-                RockPaperSissorsGuess::Rock    =>
-                    RockPaperSissorsResult::Loss(RockPaperSissorsCompare::RockCrushesSissors),
-                RockPaperSissorsGuess::Paper   =>
-                    RockPaperSissorsResult::Win(RockPaperSissorsCompare::SissorsCutPaper),
-                RockPaperSissorsGuess::Sissors =>
-                    RockPaperSissorsResult::Tie,
+            RockPaperSissorsGuess::Sissors => {
+                match b {
+                    RockPaperSissorsGuess::Rock    =>
+                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::RockCrushesSissors),
+                    RockPaperSissorsGuess::Paper   =>
+                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::SissorsCutPaper),
+                    RockPaperSissorsGuess::Sissors =>
+                        RockPaperSissorsResult::Tie,
+                }
             }
         }
     }
@@ -164,7 +169,7 @@ fn main() {
                 },
             }
 
-            let result: RockPaperSissorsResult = compare(&(player_move.as_ref().unwrap()), &comp_move); // TODO figure out why this needs as_ref
+            let result: RockPaperSissorsResult = player_move.unwrap().compare(&comp_move); 
 
             match result {
                 RockPaperSissorsResult::Win(_) => {
