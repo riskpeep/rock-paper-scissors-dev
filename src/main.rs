@@ -70,17 +70,17 @@ impl Compare<RockPaperSissorsGuess, RockPaperSissorsResult> for RockPaperSissors
 
 #[derive(Debug)]
 enum RockPaperSissorsParseError {
-    Unknown,
+    Unknown(String),
 }
 
 impl str::FromStr for RockPaperSissorsGuess {
     type Err = RockPaperSissorsParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "r" => Ok(RockPaperSissorsGuess::Rock),
-            "p" => Ok(RockPaperSissorsGuess::Paper),
-            "s" => Ok(RockPaperSissorsGuess::Sissors),
-            _   => Err(RockPaperSissorsParseError::Unknown),
+            "r" | "rock"    => Ok(RockPaperSissorsGuess::Rock),
+            "p" | "paper"   => Ok(RockPaperSissorsGuess::Paper),
+            "s" | "sissors" => Ok(RockPaperSissorsGuess::Sissors),
+            _   => Err(RockPaperSissorsParseError::Unknown(s.to_string())),
         }
     }
 }
@@ -136,8 +136,9 @@ fn main() {
 
     let mut player_wins = 0;
     let mut comp_wins = 0;
+    let mut quit = false;
 
-    loop {
+    'game: loop {
 
         let comp_move: RockPaperSissorsGuess = rand::thread_rng().gen();
 
@@ -145,7 +146,7 @@ fn main() {
 
             let mut player_move = String::new();
 
-            println!("Please input your move.");
+            println!("Please select (r)ock, (p)aper, or (s)issors:");
 
             io::stdin()
                 .read_line(&mut player_move)
@@ -160,12 +161,22 @@ fn main() {
             // a better way.
             match player_move {
                 Ok(_) => {
+                    println!("");
                     println!("You chose {}", &(player_move.as_ref().unwrap())); // TODO figure out why this needs as_ref
                     println!("I chose {}", comp_move);
                 }
-                Err(_) => {
-                    println!("That is not a valid guess, try again."); // TODO Figure out how to name the character here.
-                    continue
+                Err(RockPaperSissorsParseError::Unknown(s)) => {
+                    match &s[..] {
+                        "q" | "quit" => {
+                            println!("Quit? Okay.");
+                            quit = true;
+                            break 'game;
+                        },
+                        _            => {
+                            println!("\"{}\" is not a valid guess, try again.\n",s); // TODO Figure out how to name the character here.
+                            continue
+                        },
+                    }
                 },
             }
 
@@ -188,14 +199,19 @@ fn main() {
             break;
         }
 
+        println!("");
         if player_wins == 3 {
-            println!("Congratulations, You won the game!");
+            println!("Congratulations, You won the game!\n");
             break;
         } else if comp_wins == 3 {
-            println!("Too bad...You lost the game! Better luck next time.");
+            println!("Too bad...You lost the game! Better luck next time.\n");
             break;
         } else {
-            println!("You have {} wins, and I have {} wins.", player_wins, comp_wins);
+            println!("You have {} wins, and I have {} wins.\n", player_wins, comp_wins);
         }
+    }
+
+    if quit == true {
+        println!("Well... thanks for playing.  Sorry you had to leave so soon.");
     }
 }
