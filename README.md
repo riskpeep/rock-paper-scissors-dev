@@ -1,5 +1,5 @@
-# rock-paper-sissors
-A simple rock paper sissors game to play.
+# rock-paper-scissors
+A simple rock paper scissors game to play.
 
 This game is a game built to learn the Rust programming language and a bit about game programming.
 It is based heavily on the example game found in the rust book on rust-lang.org

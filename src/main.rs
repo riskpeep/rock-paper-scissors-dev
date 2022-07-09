@@ -1,5 +1,5 @@
 //
-// Rock, Paper, Sissors
+// Rock, Paper, Scissors
 //
 // A game by Robert Kerr
 
@@ -9,59 +9,59 @@ use std::str;
 use rand::Rng;
 use rand::distributions::{Distribution, Standard};
 
-enum RockPaperSissorsGuess {
+enum RockPaperScissorsGuess {
     Rock,
     Paper,
-    Sissors,
+    Scissors,
 }
 
 pub trait Compare<T, U> {
     fn compare(&self, b: &T) -> U;
 }
 
-enum RockPaperSissorsCompare {
-    RockCrushesSissors,
+enum RockPaperScissorsCompare {
+    RockCrushesScissors,
     PaperCoversRock,
-    SissorsCutPaper,
+    ScissorsCutPaper,
 }
 
-enum RockPaperSissorsResult {
-    Win(RockPaperSissorsCompare),
-    Loss(RockPaperSissorsCompare),
+enum RockPaperScissorsResult {
+    Win(RockPaperScissorsCompare),
+    Loss(RockPaperScissorsCompare),
     Tie,
 }
 
-impl Compare<RockPaperSissorsGuess, RockPaperSissorsResult> for RockPaperSissorsGuess{
-    fn compare(&self, b: &RockPaperSissorsGuess) -> RockPaperSissorsResult {
+impl Compare<RockPaperScissorsGuess, RockPaperScissorsResult> for RockPaperScissorsGuess{
+    fn compare(&self, b: &RockPaperScissorsGuess) -> RockPaperScissorsResult {
         match self {
-            RockPaperSissorsGuess::Rock => {
+            RockPaperScissorsGuess::Rock => {
                 match b {
-                    RockPaperSissorsGuess::Rock    =>
-                        RockPaperSissorsResult::Tie,
-                    RockPaperSissorsGuess::Paper   =>
-                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::PaperCoversRock),
-                    RockPaperSissorsGuess::Sissors =>
-                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::RockCrushesSissors),
+                    RockPaperScissorsGuess::Rock    =>
+                        RockPaperScissorsResult::Tie,
+                    RockPaperScissorsGuess::Paper   =>
+                        RockPaperScissorsResult::Loss(RockPaperScissorsCompare::PaperCoversRock),
+                    RockPaperScissorsGuess::Scissors =>
+                        RockPaperScissorsResult::Win(RockPaperScissorsCompare::RockCrushesScissors),
                 }
             }
-            RockPaperSissorsGuess::Paper => {
+            RockPaperScissorsGuess::Paper => {
                 match b {
-                    RockPaperSissorsGuess::Rock    =>
-                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::PaperCoversRock),
-                    RockPaperSissorsGuess::Paper   =>
-                        RockPaperSissorsResult::Tie,
-                    RockPaperSissorsGuess::Sissors =>
-                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::SissorsCutPaper),
+                    RockPaperScissorsGuess::Rock    =>
+                        RockPaperScissorsResult::Win(RockPaperScissorsCompare::PaperCoversRock),
+                    RockPaperScissorsGuess::Paper   =>
+                        RockPaperScissorsResult::Tie,
+                    RockPaperScissorsGuess::Scissors =>
+                        RockPaperScissorsResult::Loss(RockPaperScissorsCompare::ScissorsCutPaper),
                 }
             }
-            RockPaperSissorsGuess::Sissors => {
+            RockPaperScissorsGuess::Scissors => {
                 match b {
-                    RockPaperSissorsGuess::Rock    =>
-                        RockPaperSissorsResult::Loss(RockPaperSissorsCompare::RockCrushesSissors),
-                    RockPaperSissorsGuess::Paper   =>
-                        RockPaperSissorsResult::Win(RockPaperSissorsCompare::SissorsCutPaper),
-                    RockPaperSissorsGuess::Sissors =>
-                        RockPaperSissorsResult::Tie,
+                    RockPaperScissorsGuess::Rock    =>
+                        RockPaperScissorsResult::Loss(RockPaperScissorsCompare::RockCrushesScissors),
+                    RockPaperScissorsGuess::Paper   =>
+                        RockPaperScissorsResult::Win(RockPaperScissorsCompare::ScissorsCutPaper),
+                    RockPaperScissorsGuess::Scissors =>
+                        RockPaperScissorsResult::Tie,
                 }
             }
         }
@@ -69,68 +69,68 @@ impl Compare<RockPaperSissorsGuess, RockPaperSissorsResult> for RockPaperSissors
 }
 
 #[derive(Debug)]
-enum RockPaperSissorsParseError {
+enum RockPaperScissorsParseError {
     Unknown(String),
 }
 
-impl str::FromStr for RockPaperSissorsGuess {
-    type Err = RockPaperSissorsParseError;
+impl str::FromStr for RockPaperScissorsGuess {
+    type Err = RockPaperScissorsParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "r" | "rock"    => Ok(RockPaperSissorsGuess::Rock),
-            "p" | "paper"   => Ok(RockPaperSissorsGuess::Paper),
-            "s" | "sissors" => Ok(RockPaperSissorsGuess::Sissors),
-            _   => Err(RockPaperSissorsParseError::Unknown(s.to_string())),
+            "r" | "rock"    => Ok(RockPaperScissorsGuess::Rock),
+            "p" | "paper"   => Ok(RockPaperScissorsGuess::Paper),
+            "s" | "scissors" => Ok(RockPaperScissorsGuess::Scissors),
+            _   => Err(RockPaperScissorsParseError::Unknown(s.to_string())),
         }
     }
 }
 
-impl fmt::Display for RockPaperSissorsGuess {
+impl fmt::Display for RockPaperScissorsGuess {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            RockPaperSissorsGuess::Rock    => write!(f, "Rock"),
-            RockPaperSissorsGuess::Paper   => write!(f, "Paper"),
-            RockPaperSissorsGuess::Sissors => write!(f, "Sissors"),
+            RockPaperScissorsGuess::Rock    => write!(f, "Rock"),
+            RockPaperScissorsGuess::Paper   => write!(f, "Paper"),
+            RockPaperScissorsGuess::Scissors => write!(f, "Scissors"),
         }
     }
 }
 
-impl Distribution<RockPaperSissorsGuess> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> RockPaperSissorsGuess {
+impl Distribution<RockPaperScissorsGuess> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> RockPaperScissorsGuess {
         let index: u8 = rng.gen_range(0..3);
         match index {
-            0 => RockPaperSissorsGuess::Rock,
-            1 => RockPaperSissorsGuess::Paper,
-            2 => RockPaperSissorsGuess::Sissors,
+            0 => RockPaperScissorsGuess::Rock,
+            1 => RockPaperScissorsGuess::Paper,
+            2 => RockPaperScissorsGuess::Scissors,
             _ => unreachable!(),
         }
     }
 }
 
-impl fmt::Display for RockPaperSissorsResult {
+impl fmt::Display for RockPaperScissorsResult {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            RockPaperSissorsResult::Win(result) => {
+            RockPaperScissorsResult::Win(result) => {
                 match result {
-                    RockPaperSissorsCompare::RockCrushesSissors => write!(f, "Rock crushes sissors"),
-                    RockPaperSissorsCompare::PaperCoversRock => write!(f, "Paper covers rock"),
-                    RockPaperSissorsCompare::SissorsCutPaper => write!(f, "Sissors cut paper"),
+                    RockPaperScissorsCompare::RockCrushesScissors => write!(f, "Rock crushes scissors"),
+                    RockPaperScissorsCompare::PaperCoversRock => write!(f, "Paper covers rock"),
+                    RockPaperScissorsCompare::ScissorsCutPaper => write!(f, "Scissors cut paper"),
                 }
             },
-            RockPaperSissorsResult::Loss(result) => {
+            RockPaperScissorsResult::Loss(result) => {
                 match result {
-                    RockPaperSissorsCompare::RockCrushesSissors => write!(f, "Rock crushes sissors"),
-                    RockPaperSissorsCompare::PaperCoversRock => write!(f, "Paper covers rock"),
-                    RockPaperSissorsCompare::SissorsCutPaper => write!(f, "Sissors cut paper"),
+                    RockPaperScissorsCompare::RockCrushesScissors => write!(f, "Rock crushes scissors"),
+                    RockPaperScissorsCompare::PaperCoversRock => write!(f, "Paper covers rock"),
+                    RockPaperScissorsCompare::ScissorsCutPaper => write!(f, "Scissors cut paper"),
                 }
             },
-            RockPaperSissorsResult::Tie => write!(f, ""),
+            RockPaperScissorsResult::Tie => write!(f, ""),
         }
     }
 }
 
 fn main() {
-    println!("Hello, Lets play Rock, Paper, Sissors!");
+    println!("Hello, Lets play Rock, Paper, Scissors!");
 
     println!("Let's play best 3 out of 5 rounds.");
 
@@ -140,7 +140,7 @@ fn main() {
 
     'game: loop {
 
-        let comp_move: RockPaperSissorsGuess = rand::thread_rng().gen();
+        let comp_move: RockPaperScissorsGuess = rand::thread_rng().gen();
 
         loop {
 
@@ -152,7 +152,7 @@ fn main() {
                 .read_line(&mut player_move)
                 .expect("Failed to read move");
 
-            let player_move: Result<RockPaperSissorsGuess, RockPaperSissorsParseError>
+            let player_move: Result<RockPaperScissorsGuess, RockPaperScissorsParseError>
                 = player_move.trim().parse();
 
             // TODO can we clean up the *.unwrap()'s all over the place?  We DO want the
@@ -165,7 +165,7 @@ fn main() {
                     println!("You chose {}", &(player_move.as_ref().unwrap())); // TODO figure out why this needs as_ref
                     println!("I chose {}", comp_move);
                 }
-                Err(RockPaperSissorsParseError::Unknown(s)) => {
+                Err(RockPaperScissorsParseError::Unknown(s)) => {
                     match &s[..] {
                         "q" | "quit" => {
                             println!("Quit? Okay.");
@@ -180,16 +180,16 @@ fn main() {
                 },
             }
 
-            let result: RockPaperSissorsResult = player_move.unwrap().compare(&comp_move); 
+            let result: RockPaperScissorsResult = player_move.unwrap().compare(&comp_move); 
 
             match result {
-                RockPaperSissorsResult::Win(_) => {
+                RockPaperScissorsResult::Win(_) => {
                     player_wins += 1;
                     println!("{}", result);
                     println!("You won this round.");
                 },
-                RockPaperSissorsResult::Tie => println!("Tie..."),
-                RockPaperSissorsResult::Loss(_) => {
+                RockPaperScissorsResult::Tie => println!("Tie..."),
+                RockPaperScissorsResult::Loss(_) => {
                     comp_wins += 1;
                     println!("{}", result);
                     println!("You lost this round.");
